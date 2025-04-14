@@ -23,9 +23,7 @@ const client = new MongoClient(uri, {
 async function connectDB() {
   try {
     await client.connect();
-    console.log(
-      "Pinged your deployment. You successfully connected to MongoDB!"
-    );
+    console.log("The DB is connected!");
 
     const form = client.db("formCollection").collection("formData");
 
@@ -64,17 +62,17 @@ async function connectDB() {
     });
 
     app.patch("/form/:id", async (req, res) => {
-      try {
-        const id = req.params.id;
-        const updateData = req.body;
-        const result = await form.updateOne(
-          { _id: new ObjectId(id) },
-          { $set: updateData }
-        );
-        res.json(result);
-      } catch (error) {
-        res.status(500).json({ error: "Error updating data", details: error });
-      }
+      const id = req.params.id;
+      const updateData = req.body;
+      const filter = { _id: new ObjectId(id) };
+      const updateDoc = {
+        $set: {
+          ...updateData,
+        },
+      };
+      const option = { upsert: true };
+      const result = await form.updateOne(filter, updateDoc, option);
+      res.send(result);
     });
 
     app.delete("/form/:id", async (req, res) => {

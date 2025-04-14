@@ -1,0 +1,16 @@
+//post route
+
+1. data apdindra variable name la body ku oru request anupurom. 
+2.result apdindra variable name la db connection variable name ku athukulla antha result ah pass pannanum 
+      eg: insertOne(result)
+
+//get route
+
+1.result apdindra variable name la already create panni iruka db connection variable name kulla find() pandrom aprom toArray() ah pass pannanum
+2.
+
+//patch route
+
+
+
+//delete route
