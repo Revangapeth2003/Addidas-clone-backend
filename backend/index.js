@@ -62,17 +62,26 @@ async function connectDB() {
     });
 
     app.patch("/form/:id", async (req, res) => {
-      const id = req.params.id;
-      const updateData = req.body;
-      const filter = { _id: new ObjectId(id) };
-      const updateDoc = {
-        $set: {
-          ...updateData,
-        },
-      };
-      const option = { upsert: true };
-      const result = await form.updateOne(filter, updateDoc, option);
-      res.send(result);
+      try {
+        console.log("Incoming update data:", req.body); // Add this
+        const id = req.params.id;
+        const updateData = req.body;
+
+        const filter = { _id: new ObjectId(id) };
+        const updateDoc = { $set: { ...updateData } };
+        const option = { upsert: true };
+
+        const result = await form.updateOne(filter, updateDoc, option);
+        console.log("Update result:", result); // Add this
+
+        const updatedDoc = await form.findOne(filter);
+        console.log("Updated document:", updatedDoc); // Add this
+
+        res.status(200).send(updatedDoc);
+      } catch (err) {
+        console.error(err);
+        res.status(500).send({ error: "Update failed" });
+      }
     });
 
     app.delete("/form/:id", async (req, res) => {
